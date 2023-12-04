@@ -1,0 +1,128 @@
+<style>
+.container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .headline {
+    font-weight: {{headline_weight}};
+    letter-spacing: 0.125rem;
+    text-transform: uppercase;
+    color: {{headline_color}};
+  }
+
+  .countdown ul li {
+    display: inline-block;
+    font-size: 1.5em;
+    list-style-type: none;
+    padding: 1em;
+    text-transform: uppercase;
+    color: {{count_txt_color}};
+  }
+
+  .countdown ul li span {
+    display: block;
+    font-size: 4.5rem;
+    color: {{count_num_color}};
+  }
+
+  .emoji {
+    display: none;
+    padding: 1rem;
+  }
+
+  .emoji span {
+    font-size: 4rem;
+    padding: 0 0.5rem;
+  }
+
+  @media all and (max-width: 425px) {
+    .headline {
+      font-size: calc(1.5rem * var(--smaller));
+    }
+
+    .countdown ul li {
+      font-size: calc(1.125rem * var(--smaller));
+    }
+
+    .countdown ul li span {
+      font-size: calc(3.375rem * var(--smaller));
+    }
+  }
+</style>
+
+<div class="container">
+  <h1 class="headline" id="headline">{{headline}}</h1>
+  <div class="countdown" id="countdown">
+    <ul>
+      <li><span class="days" id="days"></span>days</li>
+      <li><span class="hours" id="hours"></span>Hours</li>
+      <li><span class="minutes" id="minutes"></span>Minutes</li>
+      <li><span class="seconds" id="seconds"></span>Seconds</li>
+    </ul>
+  </div>
+  <div id="content" class="emoji">
+    <span>{{emoji1}}</span>
+    <span>{{emoji2}}</span>
+    <span>{{emoji3}}</span>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const second = 1000,
+      minute = second * 60,
+      hour = minute * 60,
+      day = hour * 24;
+
+    //I'm adding this section so I don't have to keep updating this pen every year :-)
+    //remove this if you don't need it
+    let today = new Date(),
+      dd = String(today.getDate()).padStart(2, "0"),
+      mm = String(today.getMonth() + 1).padStart(2, "0"),
+      yyyy = today.getFullYear(),
+      nextYear = yyyy + 1,
+      dayMonth = "{{month}}/{{day}}/",
+      eventdate = dayMonth + yyyy;
+
+    today = mm + "/" + dd + "/" + yyyy;
+    if (today > eventdate) {
+      eventdate = dayMonth + nextYear;
+    }
+    //end
+
+    const countDown = new Date(eventdate).getTime(),
+      x = setInterval(function () {
+        const now = new Date().getTime(),
+          distance = countDown - now;
+
+        (document.getElementById("days").innerText = Math.floor(
+          distance / day
+        )),
+          (document.getElementById("hours").innerText = Math.floor(
+            (distance % day) / hour
+          )),
+          (document.getElementById("minutes").innerText = Math.floor(
+            (distance % hour) / minute
+          )),
+          (document.getElementById("seconds").innerText = Math.floor(
+            (distance % minute) / second
+          ));
+
+        //do something later when date is reached
+        if (distance < 0) {
+          document.getElementById("headline").innerText = "It's my birthday!";
+          document.getElementById("countdown").style.display = "none";
+          document.getElementById("content").style.display = "block";
+          clearInterval(x);
+        }
+        //seconds
+      }, 0);
+  })();
+</script>
